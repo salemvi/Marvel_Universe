@@ -8,17 +8,21 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 class RandomChar extends Component {
-    //применяем конструктор, чтобы сразу при рендере у нас конструировался метод с рандомным персонажем
-    constructor(props) {
-        super(props);
-        this.updateChar();
-    }
+    
     //145 урок получаем state без конструктора
     state = {
         //name, desr, url и т.д
         char: {},
         //для обработки svg загрузки и ошибки
         loading: true,   
+        error: false
+    }
+    componentDidMount() {
+        this.updateChar();
+        // this.timerId = setInterval(this.updateChar, 3000);
+    }
+    componentWillUnmount() {
+        // clearInterval(this.timerId)
     }
 
     //создаем новое свойство внутри класса (будто this.marvelService)
@@ -34,6 +38,11 @@ class RandomChar extends Component {
             error: false
         })
     }
+    onCharLoading = () => {
+        this.setState({
+            loading: true
+        })
+    }
     onError = () => {
         this.setState({
             loading: false,
@@ -47,6 +56,7 @@ class RandomChar extends Component {
         //задаем id
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
         //обращаемся и this.marvelService
+        this.onCharLoading();
         this.marvelService
         //обращаемся к методу свойства, чтобы получить 1 персонажа
             .getCharacter(id)
@@ -76,7 +86,7 @@ class RandomChar extends Component {
                             Or choose another one
                         </p>
                         <button className="button button__main">
-                            <div className="inner">try it</div>
+                            <div className="inner" onClick={this.updateChar}>try it</div>
                         </button>
                         <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
                     </div>
@@ -87,10 +97,13 @@ class RandomChar extends Component {
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki} = char
-
+    let imgStyleRandomImg = {'objectFit': 'cover'}
+    if(thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+        imgStyleRandomImg = {'objectFit': 'contain'}
+    }
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+            <img src={thumbnail} alt="Random character" className='randomchar__img' style={imgStyleRandomImg}/>
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">
