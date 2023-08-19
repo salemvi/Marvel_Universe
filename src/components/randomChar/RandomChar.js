@@ -3,15 +3,15 @@ import { useState, useEffect } from 'react';
 import './randomChar.scss';
 
 import mjolnir from '../../resources/img/mjolnir.png';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const RandomChar = () => {
     
     const [char, setChar] = useState({});
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const {loading, error, getCharacter, clearError} = useMarvelService();
+
 
     useEffect(() => {
         updateChar();
@@ -22,40 +22,24 @@ const RandomChar = () => {
     }, [])
 
     //создаем новое свойство внутри класса (будто this.marvelService)
-    const marvelService = new MarvelService();
 
     const onCharLoaded = (char) => {
         //name, desr, url и т.д
         setChar(() => char);
-        //для обработки svg загрузки и ошибки (иконка загрузки)
-        setLoading(loading => false);
-        //отлов ошибки из-за отсутсвия id по герою
-        setError(error => false);
-    }
-    const onCharLoading = () => {
-        setLoading(loading => true)
-    }
-    const onError = () => {
 
-        setLoading(loading => false)
-        setError(error => true)
     }
-
     //метод, который обновляет рандомного персонажа
     const updateChar = () => {
+        clearError();
         //задаем id
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
         //обращаемся и this.marvelService
-        onCharLoading();
-        marvelService
+
         //обращаемся к методу свойства, чтобы получить 1 персонажа
-            .getCharacter(id)
+            getCharacter(id)
             //обрабатываем результат для получения корректной информации
             .then(onCharLoaded)
-            .catch(onError);
     }
-
-
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading ? <Spinner/> : null;
     const content = !(loading || error) ? <View char={char}/> : null;
