@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
-
+import { Link } from 'react-router-dom';
 import './charInfo.scss';
 import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -55,7 +55,6 @@ const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = char
 
 
-    
     let imgStyle = {'objectFit': 'cover'};
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
         imgStyle = {'objectFit': 'unset'}
@@ -84,10 +83,11 @@ const View = ({char}) => {
                 {comics.length > 0 ? null : 'This character has not appeared in the comic books'}
                 {
                 comics.map((item, index) => {
+                    const comicId = item.resourceURI.match(/\d{3,5}/g)
                 return (
-                    <li key={index} className="char__comics-item">
+                    <Link to={`/comics/${comicId}`} key={index} className="char__comics-item">
                         {item.name} 
-                    </li>
+                    </Link>
                 )
             })
                 }

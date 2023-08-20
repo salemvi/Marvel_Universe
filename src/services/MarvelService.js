@@ -19,16 +19,17 @@ const useMarvelService = () => {
     //получаем персонажа по id
     const getCharacter = async (id) => {
         const result = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-        return _transformCharacter(result.data.results[0])
+        return _transformCharacter(result.data.results[0]);
     }
     //получаем 8 комиксов
     const getAllComics = async (offset = 0) => {
         const result = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`);
         return result.data.results.map(item => _transformComics(item))
-    } 
+    }
+    //получаем 1 комикс 
     const getComics = async (id) => {
-        const result = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${id}&${_apiKey}`);
-        return _transformComics(result.data.results[id]);
+        const result = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComics(result.data.results[0]);
     }
     const _transformComics = (comics) => {
         return {
@@ -40,7 +41,7 @@ const useMarvelService = () => {
                        'No information about the number of pages',
             thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
             language: comics.textObjects[0]?.language || 'en-us', //?
-            price: comics.prices[0].price ? `${comics.prices[0].price}` : 'Not available',
+            price: comics.prices[0].price ? `${comics.prices[0].price}$` : 'NOT AVAILABLE',
         };
     };
     
