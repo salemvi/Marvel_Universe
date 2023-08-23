@@ -7,6 +7,7 @@ import CharInfo from '../charInfo/CharInfo';
 import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 
 import bgVision from '../../resources/img/vision.png';
+import CharSearchForm from '../charSearchForm/CharSearchForm';
 
 const MainPage = () => {
     const [selectedChar, setChar] = useState(null)
@@ -21,13 +22,18 @@ const MainPage = () => {
             </ErrorBoundary>
           
             <div className="char__content">
-            <ErrorBoundary>
-              <CharList onCharSelected={onCharSelected}/>
-            </ErrorBoundary>
-
               <ErrorBoundary>
-              <CharInfo charId={selectedChar}/>
+                <CharList onCharSelected={onCharSelected}/>
               </ErrorBoundary>
+                <div style={{position: 'sticky', top: '10px'}}>
+                <ErrorBoundary>
+                  <CharInfo charId={selectedChar}/>
+                </ErrorBoundary>
+
+                <ErrorBoundary>
+                  <CharSearchForm/>
+                </ErrorBoundary>
+                </div>
             </div>
             <img className="bg-decoration" src={bgVision}alt="vision"/>
 
