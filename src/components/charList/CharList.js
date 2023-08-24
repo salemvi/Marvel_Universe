@@ -1,10 +1,24 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useMemo} from 'react';
 import PropTypes from 'prop-types';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService';
 import './charList.scss';
+import Spinner from '../spinner/Spinner';
+import { ErrorMessage } from 'formik';
+
+const setContent = (procces, Component, newItemLoading) => {
+    switch(procces) {
+        case 'waiting':
+            return  <Spinner/>
+        case 'loading':
+            return newItemLoading ? <Component/> : <Spinner/>
+        case 'confirmed':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage/>
+        default: new Error("What's wrong, please try it later")
+    }
+}
 
 const CharList = (props) => {
     const [charList, setCharList] = useState([]);
@@ -12,7 +26,7 @@ const CharList = (props) => {
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
 
-    const {error, loading, getAllCharacters} =  useMarvelService();
+    const {getAllCharacters, proccess, setProcess} =  useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -22,6 +36,7 @@ const CharList = (props) => {
        initial ? setNewItemLoading(false) : setNewItemLoading(true)
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -83,16 +98,12 @@ const CharList = (props) => {
         )
     }
 
-    const items = renderItems(charList);
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemLoading ? <Spinner/> : null;
-
+    const elements = useMemo(() => { 
+        return setContent(proccess, () => renderItems(charList), newItemLoading)
+    }, [proccess])
     return (
         <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {items}
+           {elements}
             <button 
                 className="button button__main button__long"
                 disabled={newItemLoading}

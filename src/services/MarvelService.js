@@ -1,6 +1,6 @@
 import {useHttp} from '../hooks/http.hook';
 const useMarvelService = () => {
-    const {loading, request, error, clearError} = useHttp();
+    const {request, clearError, proccess, setProcess} = useHttp(); //
 //fetch запрос по API
     // оптимизация кода
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
@@ -64,6 +64,14 @@ const useMarvelService = () => {
             comics: char.comics.items.length <= 10 ? char.comics.items : char.comics.items.slice(0,10)
         };
     };
-    return {loading, error, getAllCharacters, getCharacter, clearError, getComics, getAllComics, getCharacterByName}
+    return {
+        getAllCharacters,
+        getCharacter, clearError, 
+        getComics,
+        getAllComics, 
+        getCharacterByName, 
+        proccess,
+        setProcess
+    } //
 }
 export default useMarvelService;
