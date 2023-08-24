@@ -6,24 +6,26 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import AppBanner from "../appBanner/AppBanner";
 
+
 const SinglePage = ({Component, dataType}) => {
-    const {id} = useParams();
+    const {comicId, charId} = useParams();
     const [data, setData] = useState(null);
     const {loading, error, getComics, getCharacter, clearError} = useMarvelService();
 
     useEffect(() => {
         updateData();
-    }, [id])
+    }, [comicId, charId])
 
     const updateData = () => {
         clearError();
         switch (dataType) {
             case 'comic':
-                getComics(id).then(onDataLoaded);
+                getComics(comicId).then(data => onDataLoaded(data));
                 break;
             case 'character':
-                getCharacter(id).then(onDataLoaded);
+                getCharacter(charId).then(data => onDataLoaded(data));
                 break;
+            default: console.log('Whats wrong');
         }
     }
     const onDataLoaded = (data) => {

@@ -8,6 +8,7 @@ import ErrorBoundary from '../errorBoundary/ErrorBoundary';
 
 import bgVision from '../../resources/img/vision.png';
 import CharSearchForm from '../charSearchForm/CharSearchForm';
+import { Helmet } from 'react-helmet';
 
 const MainPage = () => {
     const [selectedChar, setChar] = useState(null)
@@ -17,6 +18,14 @@ const MainPage = () => {
     }
     return (
         <>
+        <Helmet>
+            <meta
+          name="Main page Marvel app"
+          content="Marvel information portal"
+          />
+          <title>Marvel information portal</title>
+      
+        </Helmet>
             <ErrorBoundary>
               <RandomChar/>
             </ErrorBoundary>
